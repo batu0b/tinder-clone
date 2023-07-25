@@ -1,0 +1,46 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import url("https://fonts.googleapis.com/css2?family=Quicksand&display=swap");
+
+@layer base {
+  body,
+  html,
+  #root {
+    @apply h-full font-Quicksand bg-gray-50;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    @apply hidden;
+  }
+  .no-scrollbar textarea::-webkit-scrollbar {
+    @apply hidden;
+  }
+  .privacy-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: radial-gradient(
+      circle,
+      #ef4a75,
+      #f34c71,
+      #f74f6d,
+      #fa5268,
+      #fd5564
+    );
+    z-index: 99;
+  }
+}
+@layer components {
+  .circleButton {
+    @apply bg-white shadow-lg shadow-black/40 border-gray-100 border-2 p-3 rounded-full active:bg-gray-200 duration-100;
+  }
+  .customInput {
+    @apply text-black font-bold text-lg p-3 rounded-md shadow-sm bg-gray-100 focus:outline-none;
+  }
+  .formContainer {
+    @apply flex flex-col justify-start gap-12;
+  }
+}
