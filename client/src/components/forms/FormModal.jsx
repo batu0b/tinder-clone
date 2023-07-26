@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { useOnClickOutside } from "../../hooks/useOnClickOutside";
 import { CloseIco } from "../../assets/icons";
@@ -6,18 +6,67 @@ import { useFormik } from "formik";
 import { LoginForm } from "./LoginForm";
 import { RegisterForm } from "./RegisterForm";
 import logo from "../../assets/tinder.png";
+import axios from "axios";
+import { setAuthToken } from "../../helpers/index";
+import { useAuthContext } from "../../context/AuthContext/AuthContext";
+
 export const FormModal = ({ closeModal, modalType }) => {
   const ref = useRef();
   useOnClickOutside(ref, closeModal);
+
+  const [isLoading, setIsLoading] = useState(false);
+  const { setIsAuth, setUser } = useAuthContext();
+
   const initialValues =
     modalType === "login"
       ? { email: "", password: "" }
       : { fullName: "", email: "", password: "" };
-  const onSubmit = (values) => {
+  const onSubmit = async (values) => {
     if (modalType === "login") {
-      console.log(values);
+      setIsLoading(true);
+      try {
+        const res = await axios.post(
+          "http://localhost:5000/api/auth/login",
+          {
+            email: values.email,
+            password: values.password,
+          },
+          {}
+        );
+        const token = res.headers["x-auth-token"];
+        if (token) {
+          setAuthToken(token);
+          setIsAuth(true);
+          setUser(res.data);
+        }
+      } catch (err) {
+        console.log(err.response.data);
+      } finally {
+        setIsLoading(false);
+      }
     } else {
-      console.log(values);
+      setIsLoading(true);
+      try {
+        const res = await axios.post(
+          "http://localhost:5000/api/auth/register",
+          {
+            fullName: values.fullName,
+            email: values.email,
+            password: values.password,
+          },
+          {}
+        );
+        const token = res.headers["x-auth-token"];
+        if (token) {
+          setAuthToken(token);
+          setIsAuth(true);
+          setUser(res.data);
+        }
+      } catch (err) {
+        console.log(err.response.data);
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
   const formik = useFormik({
@@ -36,7 +85,7 @@ export const FormModal = ({ closeModal, modalType }) => {
       <motion.div
         key={"modalContent"}
         ref={ref}
-        className=" bg-[#111418] border border-gray-700 p-4 pt-8 relative text-gray-100 w-96 rounded-md shadow-md h-3/4 flex flex-col gap-5"
+        className=" bg-[#111418] border border-gray-700 p-8 pt-8 relative text-gray-100 w-96 rounded-md shadow-md h-3/4 flex flex-col gap-5"
         initial={{ scale: 0, opacity: 0 }}
         animate={{
           scale: 1,
@@ -68,10 +117,19 @@ export const FormModal = ({ closeModal, modalType }) => {
             <RegisterForm formik={formik} />
           )}
           <button
-            className="bg-gradient-to-br font-semibold text-xl px-12 shadow-md py-3 rounded-md to-[#ff796a] hover:brightness-125 via-[#fa4952] from-[#ff2b64]"
+            disabled={isLoading}
+            className="bg-gradient-to-br  h-14 font-semibold text-xl px-12 shadow-md py-3 rounded-md to-[#ff796a] hover:brightness-125 via-[#fa4952] from-[#ff2b64]"
             type="submit"
           >
-            {modalType === "login" ? "Log In" : "Create Account"}
+            {!isLoading ? (
+              modalType === "login" ? (
+                "Log In"
+              ) : (
+                "Create Account"
+              )
+            ) : (
+              <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid  border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]" />
+            )}
           </button>
         </form>
       </motion.div>

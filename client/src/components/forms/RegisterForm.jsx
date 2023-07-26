@@ -3,6 +3,7 @@ import { OpenEyeIco } from "../../assets/icons";
 import { PasswordInput } from "./inputs/PasswordInput";
 
 export const RegisterForm = ({ formik }) => {
+  //TODO add profile image input
   return (
     <div className="formContainer">
       <input

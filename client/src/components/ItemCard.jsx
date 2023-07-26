@@ -39,6 +39,7 @@ export const ItemCard = ({ item }) => {
             >
               <UpIco className="w-4 h-4 rotate-180" />
             </button>
+            {/* FIXME fix the svg error */}
           </motion.div>
         ) : null}
       </AnimatePresence>

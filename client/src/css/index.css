@@ -23,12 +23,12 @@
     right: 0;
     bottom: 0;
     background-image: linear-gradient(
-      to right bottom,
-      #ff6b5b,
-      #ff5e5c,
-      #ff505d,
-      #ff4060,
-      #ff2b64
+      to top,
+      #ff5c3a,
+      #ff4e4a,
+      #ff4059,
+      #ff3269,
+      #fd2779
     );
     z-index: 99;
   }

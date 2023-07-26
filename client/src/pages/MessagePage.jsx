@@ -1,10 +1,9 @@
 import React from "react";
-import { motion, useIsPresent } from "framer-motion";
 import { ChatList } from "react-chat-elements";
 import "react-chat-elements/dist/main.css";
 import { useNavigate } from "react-router-dom";
+import RouteSlider from "../components/animated/RouteSlider";
 export const MessagePage = () => {
-  const isPresent = useIsPresent();
   const navigate = useNavigate();
 
   return (
@@ -31,13 +30,7 @@ export const MessagePage = () => {
           },
         ]}
       />
-      <motion.div
-        initial={{ scaleX: 1 }}
-        animate={{ scaleX: 0, transition: { duration: 0.5, ease: "circOut" } }}
-        exit={{ scaleX: 1, transition: { duration: 0.5, ease: "circIn" } }}
-        style={{ originX: isPresent ? 0 : 1 }}
-        className="privacy-screen"
-      />
+      <RouteSlider />
     </div>
   );
 };
