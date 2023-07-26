@@ -5,6 +5,7 @@ import { CloseIco } from "../../assets/icons";
 import { useFormik } from "formik";
 import { LoginForm } from "./LoginForm";
 import { RegisterForm } from "./RegisterForm";
+import logo from "../../assets/tinder.png";
 export const FormModal = ({ closeModal, modalType }) => {
   const ref = useRef();
   useOnClickOutside(ref, closeModal);
@@ -35,7 +36,7 @@ export const FormModal = ({ closeModal, modalType }) => {
       <motion.div
         key={"modalContent"}
         ref={ref}
-        className=" bg-[#111418] border border-gray-700 p-4 pt-8 relative text-gray-100 w-96 rounded-md shadow-md h-3/4"
+        className=" bg-[#111418] border border-gray-700 p-4 pt-8 relative text-gray-100 w-96 rounded-md shadow-md h-3/4 flex flex-col gap-5"
         initial={{ scale: 0, opacity: 0 }}
         animate={{
           scale: 1,
@@ -51,6 +52,12 @@ export const FormModal = ({ closeModal, modalType }) => {
         <button onClick={closeModal}>
           <CloseIco className="w-8 h-8 cursor-pointer text-gray-400 absolute right-3 top-2" />
         </button>
+        <div className="flex flex-col justify-center items-center gap-4">
+          <img className="w-9  " src={logo} alt="" />
+          <h1 className="text-center text-4xl font-extrabold">
+            {modalType === "login" ? "Get Started" : "Create Account"}
+          </h1>
+        </div>
         <form
           className="flex h-full flex-col gap-12  pb-12 justify-start"
           onSubmit={formik.handleSubmit}

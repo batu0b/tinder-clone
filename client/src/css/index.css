@@ -22,13 +22,13 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-image: radial-gradient(
-      circle,
-      #ef4a75,
-      #f34c71,
-      #f74f6d,
-      #fa5268,
-      #fd5564
+    background-image: linear-gradient(
+      to right bottom,
+      #ff6b5b,
+      #ff5e5c,
+      #ff505d,
+      #ff4060,
+      #ff2b64
     );
     z-index: 99;
   }
