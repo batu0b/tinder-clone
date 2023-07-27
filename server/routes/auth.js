@@ -3,10 +3,12 @@ const { validateRegister, User, validateLogin } = require("../models/User");
 const router = express.Router();
 const bcrypt = require("bcrypt");
 const auth = require("../middlewares/auth");
+const { upload } = require("../helpers/multer");
 
-router.post("/register", async (req, res) => {
-  const { error } = validateRegister(req.body);
+router.post("/register", upload.single("file"), async (req, res) => {
+  const { error } = validateRegister({ ...req.body, file: req.file.filename });
 
+  console.log(req.body);
   if (error) {
     return res.status(400).send(error.details[0].message);
   }
@@ -25,11 +27,13 @@ router.post("/register", async (req, res) => {
     fullName: req.body.fullName,
     email: req.body.email,
     password: hashedPassword,
+    file: req.file.filename,
+    avatarFile: req.body.avatarFile,
   });
 
   await user.save();
 
-  const token = user.createAuthToken();
+  const token = user.createAuthToken(user._id);
   res.header("x-auth-token", token).send(user);
 });
 

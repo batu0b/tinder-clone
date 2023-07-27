@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 const Joi = require("joi");
 const jwt = require("jsonwebtoken");
-//TODO Add Image Type
 const userSchema = mongoose.Schema(
   {
     fullName: {
@@ -17,6 +16,14 @@ const userSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    avatarFile: {
+      type: String,
+      required: true,
+    },
+    file: {
+      type: String,
+      required: true,
+    },
   },
   { timestamos: true }
 );
@@ -24,6 +31,8 @@ const userSchema = mongoose.Schema(
 function validateRegister(user) {
   const schema = new Joi.object({
     fullName: Joi.string().required(),
+    file: Joi.string().required(),
+    avatarFile: Joi.string().required(),
     email: Joi.string().email().required(),
     password: Joi.string().min(8).required(),
   });

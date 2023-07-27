@@ -20,7 +20,7 @@ export const FormModal = ({ closeModal, modalType }) => {
   const initialValues =
     modalType === "login"
       ? { email: "", password: "" }
-      : { fullName: "", email: "", password: "", file: null };
+      : { fullName: "", email: "", password: "", file: null, avatarFile: null };
   const onSubmit = async (values) => {
     if (modalType === "login") {
       setIsLoading(true);
@@ -46,15 +46,17 @@ export const FormModal = ({ closeModal, modalType }) => {
       }
     } else {
       setIsLoading(true);
+      const formData = new FormData();
+      formData.append("fullName", values.fullName);
+      formData.append("email", values.email);
+      formData.append("password", values.password);
+      formData.append("file", values.file);
+      formData.append("avatarFile", values.avatarFile);
+
       try {
         const res = await axios.post(
           "http://localhost:5000/api/auth/register",
-          {
-            fullName: values.fullName,
-            email: values.email,
-            password: values.password,
-          },
-          {}
+          formData
         );
         const token = res.headers["x-auth-token"];
         if (token) {

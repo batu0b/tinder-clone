@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import { PhotoIco } from "../../../assets/icons";
 import Cropper from "react-easy-crop";
 import { readFile } from "../../../helpers";
+import { getCroppedImg } from "../../../utils/cropUtils";
 
 export const FileInput = ({ formik }) => {
-  //TODO Create Croped Img Src
   const [show, setShow] = useState(!!formik.values.file);
   const [state, setState] = useState({
     imageSrc: "",
@@ -12,41 +12,57 @@ export const FileInput = ({ formik }) => {
     zoom: 1,
     aspect: 1,
   });
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
   const fileRef = React.useRef(null);
+  //form value
   const handleFile = () => {
     if (fileRef.current) {
+      if (formik.values.file !== null) {
+        fileRef.current.value = null;
+      }
       fileRef.current.click();
     }
   };
+  const handleCustomChange = async (e) => {
+    e.preventDefault();
+    const { name, files } = e.target;
+    console.log(e.target);
+    const file = files[0];
+    if (file) {
+      formik.setFieldValue(name, file);
+      const Base64 = await readFile(file);
+      setState((prev) => ({
+        ...prev,
+        imageSrc: Base64,
+      }));
+      setShow(true);
+    }
+  };
+
+  //crop
   const onCropChange = (crop) => {
     setState((prev) => ({ ...prev, crop }));
   };
   const onCropComplete = (croppedArea, croppedAreaPixels) => {
-    console.log(croppedAreaPixels.width / croppedAreaPixels.height);
+    setCroppedAreaPixels(croppedAreaPixels);
   };
   const onZoomChange = (zoom) => {
     setState((prev) => ({ ...prev, zoom }));
   };
-
-  const handleCustomChange = async (e) => {
-    e.preventDefault();
-    const { name, files } = e.target;
-    const file = files[0];
-    formik.setFieldValue(name, file);
-    const Base64 = await readFile(file);
-    setState((prev) => ({
-      ...prev,
-      imageSrc: Base64,
-    }));
-  };
-
-  useEffect(() => {
-    console.log(show);
-    if (!!formik.values.file) {
-      setShow(formik.values.file);
-      console.log(state);
+  const handleCrop = async () => {
+    try {
+      if (croppedAreaPixels) {
+        const croppedImage = await getCroppedImg(
+          state.imageSrc,
+          croppedAreaPixels
+        );
+        formik.setFieldValue("avatarFile", croppedImage);
+        setShow(false);
+      }
+    } catch (e) {
+      console.error("Kırpma işlemi başarısız oldu: ", e);
     }
-  }, [formik.values.file]);
+  };
 
   return (
     <>
@@ -81,6 +97,13 @@ export const FileInput = ({ formik }) => {
             onCropComplete={onCropComplete}
             onZoomChange={onZoomChange}
           />
+          <button
+            type="button"
+            onClick={handleCrop}
+            className="text-white text-2xl font-bold absolute bottom-0 left-0 bg-gradient-to-br h-12 rounded-br-md rounded-bl-md to-[#ff796a] hover:brightness-125 via-[#fa4952] from-[#ff2b64] w-full"
+          >
+            Crop
+          </button>
         </div>
       ) : null}
     </>

@@ -3,8 +3,6 @@ import { PasswordInput } from "./inputs/PasswordInput";
 import { FileInput } from "./inputs/FileInput";
 
 export const RegisterForm = ({ formik }) => {
-  //TODO add profile image input
-
   return (
     <div className="formContainer">
       <input
