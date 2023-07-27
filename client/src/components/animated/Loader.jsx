@@ -11,7 +11,7 @@ export const Loader = () => {
     >
       <motion.img
         animate={{ scale: [1, 1.2] }}
-        transition={{ duration: 1.5, repeat: Infinity, repeatType: "loop" }}
+        transition={{ duration: 1.5, repeat: Infinity, repeatType: "reverse" }}
         className="h-24"
         src={logo}
         alt=""

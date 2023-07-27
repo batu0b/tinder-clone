@@ -1,4 +1,5 @@
-import { Auth_Token, CryptLen } from "../constants";
+import { Auth_Token } from "../constants";
+//TODO encrypt data
 export const setAuthToken = (token) => {
   const encrypted = token;
   localStorage.setItem(Auth_Token, encrypted);
@@ -15,3 +16,13 @@ export const getAuthToken = () => {
 export const removeAuhtToken = () => {
   localStorage.removeItem(Auth_Token);
 };
+
+/////
+
+export function readFile(file) {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.addEventListener("load", () => resolve(reader.result), false);
+    reader.readAsDataURL(file);
+  });
+}

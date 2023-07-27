@@ -1,9 +1,10 @@
 import React from "react";
-import { OpenEyeIco } from "../../assets/icons";
 import { PasswordInput } from "./inputs/PasswordInput";
+import { FileInput } from "./inputs/FileInput";
 
 export const RegisterForm = ({ formik }) => {
   //TODO add profile image input
+
   return (
     <div className="formContainer">
       <input
@@ -15,16 +16,19 @@ export const RegisterForm = ({ formik }) => {
         type="text"
         placeholder="Full Name"
       />
-      <input
-        className="customInput"
-        name="email"
-        onChange={formik.handleChange}
-        value={formik.values.email}
-        id="email"
-        type="email"
-        placeholder="Email"
+      <div className="flex gap-2">
+        <input
+          className="customInput"
+          name="email"
+          onChange={formik.handleChange}
+          value={formik.values.email}
+          id="email"
+          type="email"
+          placeholder="Email"
+        />
 
-      />
+        <FileInput name="file" formik={formik} />
+      </div>
       <PasswordInput formik={formik} />
     </div>
   );

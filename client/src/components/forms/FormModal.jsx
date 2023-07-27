@@ -20,7 +20,7 @@ export const FormModal = ({ closeModal, modalType }) => {
   const initialValues =
     modalType === "login"
       ? { email: "", password: "" }
-      : { fullName: "", email: "", password: "" };
+      : { fullName: "", email: "", password: "", file: null };
   const onSubmit = async (values) => {
     if (modalType === "login") {
       setIsLoading(true);
