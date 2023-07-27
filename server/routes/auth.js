@@ -6,9 +6,11 @@ const auth = require("../middlewares/auth");
 const { upload } = require("../helpers/multer");
 
 router.post("/register", upload.single("file"), async (req, res) => {
-  const { error } = validateRegister({ ...req.body, file: req.file.filename });
+  const { error } = validateRegister({
+    ...req.body,
+    file: req.file?.filename || null,
+  });
 
-  console.log(req.body);
   if (error) {
     return res.status(400).send(error.details[0].message);
   }

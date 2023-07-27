@@ -9,6 +9,8 @@ import {
   UpIco,
 } from "../assets/icons";
 import { ItemCard } from "./ItemCard";
+import { useFetch } from "../hooks/useFetch";
+import { useAuthContext } from "../context/AuthContext/AuthContext";
 
 const db = [
   {
@@ -26,6 +28,13 @@ const db = [
 ];
 
 export default function TinderCards() {
+  const { user } = useAuthContext();
+
+  const { err, loading, response } = useFetch(
+    `http://localhost:5000/api/users/Swipes/${user._id}`
+  );
+
+  console.log(response);
   const [currentIndex, setCurrentIndex] = useState(db.length - 1);
   const [lastDirection, setLastDirection] = useState();
   const currentIndexRef = useRef(currentIndex);
