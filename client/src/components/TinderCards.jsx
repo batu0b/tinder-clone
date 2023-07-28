@@ -11,33 +11,22 @@ import {
 import { ItemCard } from "./ItemCard";
 import { useFetch } from "../hooks/useFetch";
 import { useAuthContext } from "../context/AuthContext/AuthContext";
+import axios from "axios";
 
-const db = [
-  {
-    name: "mark",
-    url: "https://i.sozcucdn.com/wp-content/uploads/2022/10/13/iecrop/zuckerberg-depophotos_16_9_1665652950.jpg?w=1200&h=900&mode=crop&scale=both",
-  },
-  {
-    name: "elon",
-    url: "https://m.bianet.org/system/uploads/1/articles/spot_image/000/269/528/original/elon_M.jpg",
-  },
-  {
-    name: "bill",
-    url: "https://imageio.forbes.com/specials-images/imageserve/62d599ede3ff49f348f9b9b4/0x0.jpg?format=jpg&crop=821,821,x155,y340,safe&height=416&width=416&fit=bounds",
-  },
-];
-
-export default function TinderCards() {
-  const { user } = useAuthContext();
-
-  const { err, loading, response } = useFetch(
-    `http://localhost:5000/api/users/Swipes/${user._id}`
-  );
-
-  console.log(response);
+export default function TinderCards({ db }) {
   const [currentIndex, setCurrentIndex] = useState(db.length - 1);
-  const [lastDirection, setLastDirection] = useState();
   const currentIndexRef = useRef(currentIndex);
+  const { user } = useAuthContext();
+  const swipePost = async (dir, OtherUserId) => {
+    const res = await axios.post(
+      `http://localhost:5000/api/users/Swipe/${dir}`,
+      {
+        otherUserId: OtherUserId,
+        id: user._id,
+      }
+    );
+    console.log(res);
+  };
 
   const childRefs = useMemo(
     () =>
@@ -57,12 +46,12 @@ export default function TinderCards() {
   const canSwipe = currentIndex >= 0;
 
   const swiped = (direction, nameToDelete, index) => {
-    setLastDirection(direction);
     updateCurrentIndex(index - 1);
   };
 
-  const outOfFrame = (name, idx) => {
-    console.log(`${name} (${idx}) left the screen!`, currentIndexRef.current);
+  const outOfFrame = async (dir, name, id, idx) => {
+    console.log(`${name} (${id}) ${dir} the screen!`, currentIndexRef.current);
+    await swipePost(dir, id);
     currentIndexRef.current >= idx && childRefs[idx].current.restoreCard();
   };
 
@@ -95,8 +84,10 @@ export default function TinderCards() {
                 ref={childRefs[index]}
                 className="absolute z-10 select-none swipe "
                 preventSwipe={[...isTopCard]}
-                onSwipe={(dir) => swiped(dir, x.name, index)}
-                onCardLeftScreen={() => outOfFrame(x.name, index)}
+                onSwipe={(dir) => swiped(dir, x.fullName, index, x._id)}
+                onCardLeftScreen={(dir) =>
+                  outOfFrame(dir, x.fullName, x._id, index)
+                }
                 swipeThreshold={3}
               >
                 <ItemCard item={x} />

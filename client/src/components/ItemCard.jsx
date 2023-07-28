@@ -4,16 +4,16 @@ import { AnimatePresence, motion } from "framer-motion";
 
 export const ItemCard = ({ item }) => {
   const [show, setShow] = useState(false);
-
+  const imgUrl = `http://localhost:5000/imgs/${item.file}`;
   return (
     <div
       style={{
-        background: `linear-gradient(to bottom, rgba(239, 74, 117, 0.24), rgba(0, 0, 0, 1)) , url(${item.url})`,
+        background: `linear-gradient(to bottom, rgba(239, 74, 117, 0.1), rgba(0, 0, 0, 1)) , url(${imgUrl})`,
       }}
-      className={` rounded-md shadow-lg overflow-hidden border-2 shadow-black/40 p-2 bg-center bg-contain relative h-96 w-96`}
+      className={` rounded-md shadow-lg overflow-hidden border-2 shadow-black/40 p-2 !bg-center !bg-cover !bg-no-repeat relative h-96 w-96`}
     >
       <h3 className="absolute text-xl text-red-50 bottom-4 left-4">
-        {item.name}
+        {item.fullName}
       </h3>
       {show ? null : (
         <button

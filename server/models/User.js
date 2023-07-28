@@ -24,6 +24,16 @@ const userSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    likedUsers: [
+      {
+        type: String,
+      },
+    ],
+    dislikedUsers: [
+      {
+        type: String,
+      },
+    ],
   },
   { timestamos: true }
 );

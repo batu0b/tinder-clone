@@ -9,6 +9,7 @@ import logo from "../../assets/tinder.png";
 import axios from "axios";
 import { setAuthToken } from "../../helpers/index";
 import { useAuthContext } from "../../context/AuthContext/AuthContext";
+import { Spinner } from "../animated/Spinner";
 
 export const FormModal = ({ closeModal, modalType }) => {
   const ref = useRef();
@@ -74,6 +75,7 @@ export const FormModal = ({ closeModal, modalType }) => {
   const formik = useFormik({
     initialValues: initialValues,
     onSubmit: onSubmit,
+    //TODO add validation
   });
 
   return (
@@ -130,7 +132,7 @@ export const FormModal = ({ closeModal, modalType }) => {
                 "Create Account"
               )
             ) : (
-              <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid  border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]" />
+              <Spinner />
             )}
           </button>
         </form>

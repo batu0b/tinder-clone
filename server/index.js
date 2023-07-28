@@ -13,8 +13,7 @@ app.use(
   })
 );
 
-app.use(express.static(path.join(__dirname + "/public")));
-app.use("/images", express.static(path.join(__dirname + "/public/images")));
+app.use("/imgs", express.static(path.join(__dirname, "/public/images")));
 
 const corsOption = {
   origin: ["http://localhost:3000"],
