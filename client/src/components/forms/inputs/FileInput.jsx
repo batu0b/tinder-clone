@@ -65,11 +65,11 @@ export const FileInput = ({ formik }) => {
   };
 
   return (
-    <>
+    <div className="w-full z-50 ">
       <button
         onClick={handleFile}
         type="button"
-        className="customInput flex justify-center items-center text-gray-500 text-sm w-full"
+        className="customInput flex  justify-center items-center text-gray-500 text-sm w-full"
       >
         <PhotoIco className={`${formik.values.file ? "text-green-500" : ""}`} />
         <input
@@ -83,6 +83,9 @@ export const FileInput = ({ formik }) => {
           accept=".png, .jpg, .jpeg"
         />
       </button>
+      {formik.touched.file && formik.errors.file ? (
+        <div className="text-red-500">{formik.errors.file}</div>
+      ) : null}
       {show ? (
         <div className="z-50 top-0 left-0 right-0 bottom-0 bg-white">
           <Cropper
@@ -106,6 +109,6 @@ export const FileInput = ({ formik }) => {
           </button>
         </div>
       ) : null}
-    </>
+    </div>
   );
 };

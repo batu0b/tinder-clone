@@ -1,28 +1,19 @@
 import React from "react";
 import { PasswordInput } from "./inputs/PasswordInput";
 import { FileInput } from "./inputs/FileInput";
+import { TextInput } from "./inputs/TextInput";
 
 export const RegisterForm = ({ formik }) => {
   return (
     <div className="formContainer">
-      <input
-        className="customInput"
-        name="fullName"
-        onChange={formik.handleChange}
-        value={formik.values.fullname}
-        id="fullname"
-        type="text"
-        placeholder="Full Name"
-      />
-      <div className="flex gap-2">
-        <input
-          className="customInput"
+      <TextInput name="fullName" placeholder="Full Name" formik={formik} />
+      <div className="flex gap-2 items-stretch">
+        <TextInput
+          className=""
           name="email"
-          onChange={formik.handleChange}
-          value={formik.values.email}
           id="email"
-          type="email"
           placeholder="Email"
+          formik={formik}
         />
 
         <FileInput name="file" formik={formik} />

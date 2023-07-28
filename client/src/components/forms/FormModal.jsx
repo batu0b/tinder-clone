@@ -10,6 +10,7 @@ import axios from "axios";
 import { setAuthToken } from "../../helpers/index";
 import { useAuthContext } from "../../context/AuthContext/AuthContext";
 import { Spinner } from "../animated/Spinner";
+import { loginSchema, registerSchema } from "../../validations/Schematics";
 
 export const FormModal = ({ closeModal, modalType }) => {
   const ref = useRef();
@@ -22,6 +23,9 @@ export const FormModal = ({ closeModal, modalType }) => {
     modalType === "login"
       ? { email: "", password: "" }
       : { fullName: "", email: "", password: "", file: null, avatarFile: null };
+
+  const validationSchema = modalType === "lgoin" ? loginSchema : registerSchema;
+
   const onSubmit = async (values) => {
     if (modalType === "login") {
       setIsLoading(true);
@@ -75,7 +79,7 @@ export const FormModal = ({ closeModal, modalType }) => {
   const formik = useFormik({
     initialValues: initialValues,
     onSubmit: onSubmit,
-    //TODO add validation
+    validationSchema: validationSchema,
   });
 
   return (
@@ -89,7 +93,7 @@ export const FormModal = ({ closeModal, modalType }) => {
       <motion.div
         key={"modalContent"}
         ref={ref}
-        className=" bg-[#111418] border border-gray-700 p-8 pt-8 relative text-gray-100 w-96 rounded-md shadow-md h-3/4 flex flex-col gap-5"
+        className=" bg-[#111418] border border-gray-700 p-8 pt-8 relative text-gray-100 w-96 rounded-md shadow-md min-h-3/4 max-h-full flex flex-col gap-5"
         initial={{ scale: 0, opacity: 0 }}
         animate={{
           scale: 1,

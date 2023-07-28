@@ -38,7 +38,7 @@
     @apply bg-white shadow-lg shadow-black/40 border-gray-100 border-2 p-3 rounded-full active:bg-gray-200 duration-100;
   }
   .customInput {
-    @apply text-black font-bold text-lg p-3 rounded-md shadow-sm bg-gray-100 focus:outline-none;
+    @apply text-black font-bold text-lg p-3 h-14 rounded-md shadow-sm bg-gray-100 focus:outline-none;
   }
   .formContainer {
     @apply flex flex-col justify-start gap-12;

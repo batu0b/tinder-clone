@@ -11,7 +11,6 @@ export const HomePage = () => {
   const { err, loading, response } = useFetch(
     `http://localhost:5000/api/users/Swipes/${user._id}`
   );
-  console.log(response);
   return (
     <div className="h-[calc(100vh-5rem)]">
       <>
