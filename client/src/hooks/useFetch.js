@@ -6,6 +6,7 @@ export const useFetch = (url) => {
   const [loading, setLoading] = useState(true);
 
   const fetchData = async () => {
+    setLoading(true);
     try {
       const res = await axios.get(url);
       if (res.data) {
@@ -18,9 +19,10 @@ export const useFetch = (url) => {
       setLoading(false);
     }
   };
+
   useEffect(() => {
     fetchData();
   }, [url]);
 
-  return { loading, response, err };
+  return { loading, response, err, fetchData, setResponse };
 };

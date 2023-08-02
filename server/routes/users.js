@@ -19,6 +19,7 @@ router.get("/Swipes/:userId", async (req, res) => {
 });
 
 router.post("/Swipe/:dir", async (req, res) => {
+  //FIXME Fix liked user cannot be added again 
   const dir = req.params.dir;
   const otherUserId = req.body.otherUserId;
   const userId = req.body.id;

@@ -5,18 +5,20 @@ import {
   CloseIco,
   FlashIco,
   HeartIco,
+  ReloadIco,
   StarIco,
-  UpIco,
 } from "../assets/icons";
 import { ItemCard } from "./ItemCard";
-import { useFetch } from "../hooks/useFetch";
 import { useAuthContext } from "../context/AuthContext/AuthContext";
 import axios from "axios";
+import PapperPlane from "./animated/PapperPlane";
 
-export default function TinderCards({ db }) {
+export default function TinderCards({ db, triggerFetch, setResponse }) {
   const [currentIndex, setCurrentIndex] = useState(db.length - 1);
+  const [deletedItems, setDeletedItems] = useState([]);
   const currentIndexRef = useRef(currentIndex);
   const { user } = useAuthContext();
+
   const swipePost = async (dir, OtherUserId) => {
     const res = await axios.post(
       `http://localhost:5000/api/users/Swipe/${dir}`,
@@ -25,6 +27,7 @@ export default function TinderCards({ db }) {
         id: user._id,
       }
     );
+
     console.log(res);
   };
 
@@ -33,7 +36,7 @@ export default function TinderCards({ db }) {
       Array(db.length)
         .fill(0)
         .map((i) => React.createRef()),
-    []
+    [db]
   );
 
   const updateCurrentIndex = (val) => {
@@ -50,6 +53,17 @@ export default function TinderCards({ db }) {
   };
 
   const outOfFrame = async (dir, name, id, idx) => {
+    setResponse((prevResponse) =>
+      prevResponse.filter((item) => item._id !== id)
+    );
+    const deletedItem = db[idx];
+    setDeletedItems((prev) => {
+      const newItems = [...prev];
+      if (newItems.length === 2) {
+        newItems.shift();
+      }
+      return [...newItems, deletedItem];
+    });
     console.log(`${name} (${id}) ${dir} the screen!`, currentIndexRef.current);
     await swipePost(dir, id);
     currentIndexRef.current >= idx && childRefs[idx].current.restoreCard();
@@ -62,38 +76,56 @@ export default function TinderCards({ db }) {
   };
 
   const goBack = async () => {
-    if (!canGoBack) return;
+    if (deletedItems.length <= 0) return;
+    const lastSwipedItem = deletedItems[deletedItems.length - 1];
+    setDeletedItems((prevItems) => prevItems.slice(0, -1));
+    await setResponse((prev) => [...prev, lastSwipedItem]);
     const newIndex = currentIndex + 1;
     updateCurrentIndex(newIndex);
-    await childRefs[newIndex].current.restoreCard();
   };
 
   return (
     <div className="overflow-hidden h-full w-full relative flex items-center justify-center ">
       <div className="flex justify-evenly flex-col relative  w-full items-center h-full overflow-hidden ">
         <div className="h-96 w-96">
-          {db.map((x, index) => {
-            const isTopCard =
-              index === currentIndex
-                ? ["up", "down"]
-                : ["up", "down", "right", "left"];
+          {db.length > 0 ? (
+            db.map((x, index) => {
+              const isTopCard =
+                index === currentIndex
+                  ? ["up", "down"]
+                  : ["up", "down", "right", "left"];
 
-            return (
-              <TinderCard
-                key={index}
-                ref={childRefs[index]}
-                className="absolute z-10 select-none swipe "
-                preventSwipe={[...isTopCard]}
-                onSwipe={(dir) => swiped(dir, x.fullName, index, x._id)}
-                onCardLeftScreen={(dir) =>
-                  outOfFrame(dir, x.fullName, x._id, index)
-                }
-                swipeThreshold={3}
+              return (
+                <TinderCard
+                  key={index}
+                  ref={childRefs[index]}
+                  className="absolute z-10 select-none swipe "
+                  preventSwipe={[...isTopCard]}
+                  onSwipe={(dir) => swiped(dir, x.fullName, index, x._id)}
+                  onCardLeftScreen={(dir) =>
+                    outOfFrame(dir, x.fullName, x._id, index)
+                  }
+                  swipeThreshold={3}
+                >
+                  <ItemCard item={x} />
+                </TinderCard>
+              );
+            })
+          ) : (
+            <div className="flex  flex-col justify-center items-center gap-3">
+              <PapperPlane />
+              <h4 className="font-bold max-w-full text-center break-normal whitespace-pre-wrap">
+                Oops no one new in sight at the moment you might want to refresh
+              </h4>
+              <button
+                onClick={triggerFetch}
+                type="button"
+                className="circleButton"
               >
-                <ItemCard item={x} />
-              </TinderCard>
-            );
-          })}
+                <ReloadIco />
+              </button>
+            </div>
+          )}
         </div>
         <div className="flex z-50 justify-evenly w-full">
           <button onClick={() => goBack()} className="circleButton">
