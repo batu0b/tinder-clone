@@ -19,39 +19,48 @@ router.get("/Swipes/:userId", async (req, res) => {
 });
 
 router.post("/Swipe/:dir", async (req, res) => {
-  //FIXME Fix liked user cannot be added again 
   const dir = req.params.dir;
   const otherUserId = req.body.otherUserId;
   const userId = req.body.id;
+  const user = await User.findById(userId).select({
+    likedUsers: 1,
+    dislikedUsers: 1,
+  });
+  const likedUser = await User.findOne({
+    _id: userId,
+    likedUsers: { $in: [otherUserId] },
+  });
+  const dislikedUser = await User.findOne({
+    _id: userId,
+    dislikedUsers: { $in: [otherUserId] },
+  });
   if (dir === "right") {
-    const user = await User.findByIdAndUpdate(
-      userId,
-      {
-        $push: { likedUsers: otherUserId },
-      },
-      { new: true, useFindAndModify: false }
-    );
-
-    if (!!user) {
+    if (!likedUser) {
+      user.likedUsers.push(otherUserId);
+      await user.save();
       const otherUser = await User.findOne({
         _id: otherUserId,
         likedUsers: { $in: [userId] },
       });
-
       if (!!otherUser) {
         res.send({ match: true });
+      }
+      if (!!dislikedUser) {
+        dislikedUser.dislikedUsers.pull(otherUserId);
+        await dislikedUser.save();
       }
     } else {
       res.send({ match: false });
     }
   } else if (dir === "left") {
-    await User.findByIdAndUpdate(
-      userId,
-      {
-        $push: { dislikedUsers: otherUserId },
-      },
-      { new: true, useFindAndModify: false }
-    );
+    if (!dislikedUser) {
+      user.dislikedUsers.push(otherUserId);
+      await user.save();
+      if (!!likedUser) {
+        likedUser.likedUsers.pull(otherUserId);
+        await likedUser.save();
+      }
+    }
   }
 });
 

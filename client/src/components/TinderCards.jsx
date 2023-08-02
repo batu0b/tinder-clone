@@ -66,7 +66,6 @@ export default function TinderCards({ db, triggerFetch, setResponse }) {
     });
     console.log(`${name} (${id}) ${dir} the screen!`, currentIndexRef.current);
     await swipePost(dir, id);
-    currentIndexRef.current >= idx && childRefs[idx].current.restoreCard();
   };
 
   const swipe = async (dir) => {
