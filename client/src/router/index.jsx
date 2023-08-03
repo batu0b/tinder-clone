@@ -7,6 +7,7 @@ import { AnimatePresence } from "framer-motion";
 import ChatPage from "../pages/ChatPage";
 import { AuthLayout } from "../layouts/AuthLayout";
 import { LoginPage } from "../pages/LoginPage";
+import ProfilePage from "../pages/ProfilePage";
 
 export default function Router() {
   const location = useLocation();
@@ -15,6 +16,7 @@ export default function Router() {
       <Routes location={location.pathname} key={location.pathname}>
         <Route element={<HomeLayout />}>
           <Route path="/" element={<HomePage />} />
+          <Route path="/profile" element={<ProfilePage />} />
           <Route path="/messages" element={<MessagePage />} />
           <Route path="/messages/:userName" element={<ChatPage />} />
         </Route>

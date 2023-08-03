@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { AuthContext } from "./AuthContext";
-import { getAuthToken } from "../../helpers";
+import { getAuthToken, removeAuhtToken } from "../../helpers";
 import axios from "axios";
 
 export default function AuthProvider({ children }) {
@@ -31,6 +31,11 @@ export default function AuthProvider({ children }) {
     }
   };
 
+  const logOut = () => {
+    removeAuhtToken();
+    setIsAuth(false);
+  };
+
   useEffect(() => {
     if (token) {
       checkToken(token);
@@ -46,6 +51,8 @@ export default function AuthProvider({ children }) {
         setIsAuth: setIsAuth,
         setUser: setUser,
         user: user,
+        checkToken: checkToken,
+        logOut: logOut,
       }}
     >
       {children}

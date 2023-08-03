@@ -32,6 +32,10 @@
     );
     z-index: 99;
   }
+
+  .h-screen-without-header {
+    @apply h-[calc(100vh-5rem)];
+  }
 }
 @layer components {
   .circleButton {

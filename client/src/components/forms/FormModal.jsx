@@ -24,7 +24,7 @@ export const FormModal = ({ closeModal, modalType }) => {
       ? { email: "", password: "" }
       : { fullName: "", email: "", password: "", file: null, avatarFile: null };
 
-  const validationSchema = modalType === "lgoin" ? loginSchema : registerSchema;
+  const validationSchema = modalType === "login" ? loginSchema : registerSchema;
 
   const onSubmit = async (values) => {
     if (modalType === "login") {

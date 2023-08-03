@@ -11,7 +11,7 @@ export const HomePage = () => {
     `http://localhost:5000/api/users/Swipes/${user._id}`
   );
   return (
-    <div className="h-[calc(100vh-5rem)]">
+    <div className="h-screen-without-header">
       <>
         {!loading && !err ? (
           <TinderCards

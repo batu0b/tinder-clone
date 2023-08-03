@@ -3,10 +3,15 @@ import { Button, Input, MessageList } from "react-chat-elements";
 import RouteSlider from "../components/animated/RouteSlider";
 
 export default function ChatPage() {
-
+  const now = new Date();
+  const date = now.toISOString().slice(0, 10);
   return (
     <div className="h-[calc(100vh-5rem)] flex flex-col">
       <div className="h-full p-4  overflow-y-auto lg:no-scrollbar">
+        <div className="text-center text-gray-600">
+          <h3 className="uppercase">you were matched</h3>
+          <p className="font-medium">{date}</p>
+        </div>
         <MessageList
           className="message-list"
           lockable={true}
