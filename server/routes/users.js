@@ -43,7 +43,12 @@ router.post("/Swipe/:dir", async (req, res) => {
         likedUsers: { $in: [userId] },
       });
       if (!!otherUser) {
-        res.send({ match: true });
+        res.send({
+          match: true,
+          user: { fullName: otherUser.fullName, avatar: otherUser.avatarFile },
+        });
+      } else {
+        res.send({ match: false });
       }
       if (!!dislikedUser) {
         dislikedUser.dislikedUsers.pull(otherUserId);
@@ -56,6 +61,7 @@ router.post("/Swipe/:dir", async (req, res) => {
     if (!dislikedUser) {
       user.dislikedUsers.push(otherUserId);
       await user.save();
+      res.send({ match: false });
       if (!!likedUser) {
         likedUser.likedUsers.pull(otherUserId);
         await likedUser.save();

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import TinderCard from "react-tinder-card";
 import {
   BackIco,
@@ -12,7 +12,39 @@ import { ItemCard } from "./ItemCard";
 import { useAuthContext } from "../context/AuthContext/AuthContext";
 import axios from "axios";
 import PapperPlane from "./animated/PapperPlane";
+import toast, { Toaster } from "react-hot-toast";
 
+const notify = (user) => {
+  toast.custom((t) => (
+    <div
+      className={`${
+        t.visible ? "animate-enter" : "animate-leave"
+      } max-w-md w-full bg-white shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-black ring-opacity-5`}
+    >
+      <div className="flex-1 w-0 p-4">
+        <div className="flex items-start">
+          <div className="flex-shrink-0 pt-0.5">
+            <img className="h-10 w-10 rounded-full" src={user.avatar} alt="" />
+          </div>
+          <div className="ml-3 flex-1">
+            <p className="text-sm font-bold  text-gray-900">
+              You just matched with someone.
+            </p>
+            <p className="mt-1 text-sm text-gray-800">{user.fullName}</p>
+          </div>
+        </div>
+      </div>
+      <div className="flex border-l border-gray-200">
+        <button
+          onClick={() => toast.dismiss(t.id)}
+          className="w-full border border-transparent rounded-none rounded-r-lg p-4 flex items-center justify-center text-sm font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  ));
+};
 export default function TinderCards({ db, triggerFetch, setResponse }) {
   const [currentIndex, setCurrentIndex] = useState(db.length - 1);
   const [deletedItems, setDeletedItems] = useState([]);
@@ -20,15 +52,21 @@ export default function TinderCards({ db, triggerFetch, setResponse }) {
   const { user } = useAuthContext();
 
   const swipePost = async (dir, OtherUserId) => {
-    const res = await axios.post(
-      `http://localhost:5000/api/users/Swipe/${dir}`,
-      {
-        otherUserId: OtherUserId,
-        id: user._id,
-      }
-    );
+    try {
+      const res = await axios.post(
+        `http://localhost:5000/api/users/Swipe/${dir}`,
+        {
+          otherUserId: OtherUserId,
+          id: user._id,
+        }
+      );
 
-    console.log(res);
+      if (res.data.match) {
+        notify(res.data.user);
+      }
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const childRefs = useMemo(
@@ -44,11 +82,9 @@ export default function TinderCards({ db, triggerFetch, setResponse }) {
     currentIndexRef.current = val;
   };
 
-  const canGoBack = currentIndex < db.length - 1;
-
   const canSwipe = currentIndex >= 0;
 
-  const swiped = (direction, nameToDelete, index) => {
+  const swiped = (index) => {
     updateCurrentIndex(index - 1);
   };
 
@@ -64,7 +100,7 @@ export default function TinderCards({ db, triggerFetch, setResponse }) {
       }
       return [...newItems, deletedItem];
     });
-    console.log(`${name} (${id}) ${dir} the screen!`, currentIndexRef.current);
+
     await swipePost(dir, id);
   };
 
@@ -80,7 +116,7 @@ export default function TinderCards({ db, triggerFetch, setResponse }) {
     setDeletedItems((prevItems) => prevItems.slice(0, -1));
     await setResponse((prev) => [...prev, lastSwipedItem]);
     const newIndex = currentIndex + 1;
-    updateCurrentIndex(newIndex);
+    updateCurrentIndex(+newIndex);
   };
 
   return (
@@ -100,7 +136,7 @@ export default function TinderCards({ db, triggerFetch, setResponse }) {
                   ref={childRefs[index]}
                   className="absolute z-10 select-none swipe "
                   preventSwipe={[...isTopCard]}
-                  onSwipe={(dir) => swiped(dir, x.fullName, index, x._id)}
+                  onSwipe={(dir) => swiped(index)}
                   onCardLeftScreen={(dir) =>
                     outOfFrame(dir, x.fullName, x._id, index)
                   }
@@ -144,6 +180,7 @@ export default function TinderCards({ db, triggerFetch, setResponse }) {
           </button>
         </div>
       </div>
+      <Toaster />
     </div>
   );
 }
