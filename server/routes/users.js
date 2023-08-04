@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { User } = require("../models/User");
+const Chat = require("../models/Chat");
 
 router.get("/Swipes/:userId", async (req, res) => {
   const id = req.params.userId;
@@ -47,6 +48,8 @@ router.post("/Swipe/:dir", async (req, res) => {
           match: true,
           user: { fullName: otherUser.fullName, avatar: otherUser.avatarFile },
         });
+        const chat = new Chat({ users: [otherUserId, userId] });
+        await chat.save();
       } else {
         res.send({ match: false });
       }

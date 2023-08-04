@@ -35,7 +35,7 @@ const userSchema = mongoose.Schema(
       },
     ],
   },
-  { timestamos: true }
+  { timestamps: true }
 );
 
 function validateRegister(user) {
