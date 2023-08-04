@@ -7,7 +7,7 @@ router.get("/", auth, async (req, res) => {
   try {
     const chats = await Chat.find({
       users: { $elemMatch: { $eq: req.userId } },
-    }).populate("users", "name avatarFile");
+    }).populate("users", "fullName avatarFile");
     res.send(chats);
   } catch (error) {
     res.status(400);

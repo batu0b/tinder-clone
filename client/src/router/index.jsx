@@ -18,7 +18,7 @@ export default function Router() {
           <Route path="/" element={<HomePage />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/messages" element={<MessagePage />} />
-          <Route path="/messages/:userName" element={<ChatPage />} />
+          <Route path="/messages/:chatId" element={<ChatPage />} />
         </Route>
         <Route element={<AuthLayout />}>
           <Route path="/login" element={<LoginPage />} />

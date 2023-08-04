@@ -7,8 +7,8 @@ const router = express.Router();
 router.get("/:chatId", auth, async (req, res) => {
   try {
     const messages = await Chat.findById(req.params.chatId)
-      .select("messages")
-      .populate("sender", "name");
+      .select("messages -_id createdAt")
+      .populate("messages.sender", "fullName avatarFile");
     res.json(messages);
   } catch (err) {
     res.status(400);
@@ -17,7 +17,7 @@ router.get("/:chatId", auth, async (req, res) => {
 });
 
 router.post("/", auth, async (req, res) => {
-  const { content, chatId } = req.body;
+  const { content, chatId, userId } = req.body;
 
   if (!content || !chatId) {
     return res.status(400);
@@ -28,7 +28,12 @@ router.post("/", auth, async (req, res) => {
   };
 
   try {
-    const sender = User.findById(newMessage.sender).select("name -id_");
+    debugger;
+    const sender = await User.findById(newMessage.sender).select({
+      fullName: 1,
+      avatarFile: 1,
+    });
+    debugger;
     const chat = await Chat.findById(chatId).select("messages");
     if (!chat || !sender) {
       return res.status(500).send("not found");
