@@ -28,12 +28,10 @@ router.post("/", auth, async (req, res) => {
   };
 
   try {
-    debugger;
     const sender = await User.findById(newMessage.sender).select({
       fullName: 1,
       avatarFile: 1,
     });
-    debugger;
     const chat = await Chat.findById(chatId).select("messages");
     if (!chat || !sender) {
       return res.status(500).send("not found");
