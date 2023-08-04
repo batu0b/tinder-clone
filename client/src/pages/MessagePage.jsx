@@ -23,7 +23,6 @@ export const MessagePage = () => {
     };
   });
 
-  console.log(response);
   return (
     <div>
       {loading ? (

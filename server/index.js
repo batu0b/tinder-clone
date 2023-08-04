@@ -46,16 +46,14 @@ mongoose
   .catch((err) => console.log(err));
 
 io.on("connection", (socket) => {
-  console.log(socket.id);
   socket.on("join chat", (room) => {
     socket.join(room);
   });
   socket.on("new message", ({ newMessage, room }) => {
-    console.log(newMessage);
     socket.to(room).emit("message recieved", newMessage);
   });
 });
 
 server.listen(5000, () => {
-  console.log("working on 3001");
+  console.log("working on 5000");
 });

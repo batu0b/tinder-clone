@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Button, Input, MessageList } from "react-chat-elements";
 import RouteSlider from "../components/animated/RouteSlider";
 import { useFetch } from "../hooks/useFetch";
@@ -16,7 +16,9 @@ export default function ChatPage() {
   const { chatId } = useParams();
   const { user } = useAuthContext();
   const token = getAuthToken();
+  const ChatBoxRef = useRef(null);
   //TODO scroll bottom
+  //FIXME Fix socket out
   const config = {
     headers: { "x-auth-token": token },
   };
@@ -25,7 +27,16 @@ export default function ChatPage() {
     config
   );
   const newDate = new Date(response?.createdAt);
-  console.log(response);
+
+  const scrollToBottom = () => {
+    ChatBoxRef.current.scrollTop = ChatBoxRef.current.scrollHeight;
+  };
+
+  useEffect(() => {
+    if (ChatBoxRef.current) {
+      scrollToBottom();
+    }
+  }, [ChatBoxRef.current, response?.messages]);
 
   useEffect(() => {
     socket = io("http://localhost:5000/");
@@ -60,7 +71,6 @@ export default function ChatPage() {
         );
         setMessage("");
         if (data) {
-          console.log(data);
           const newData = {
             ...data,
             createdAt: new Date(),
@@ -79,6 +89,11 @@ export default function ChatPage() {
     }
   };
 
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      sendMessage();
+    }
+  };
   return (
     <div className="h-[calc(100vh-5rem)] flex flex-col">
       {loading ? (
@@ -86,7 +101,10 @@ export default function ChatPage() {
           <Spinner />
         </div>
       ) : (
-        <div className="h-full p-4  overflow-y-auto lg:no-scrollbar">
+        <div
+          ref={ChatBoxRef}
+          className="h-full p-4  overflow-y-auto lg:no-scrollbar"
+        >
           <div className="text-center text-gray-600">
             <h3 className="uppercase">you were matched</h3>
             <p className="font-medium">{newDate.toLocaleDateString()}</p>
@@ -112,6 +130,7 @@ export default function ChatPage() {
 
       <Input
         value={message}
+        onKeyDown={handleKeyDown}
         onChange={(e) => setMessage(e.target.value)}
         className="border-2 mt-auto no-scrollbar"
         rightButtons={
@@ -121,8 +140,9 @@ export default function ChatPage() {
             text={"SEND"}
           />
         }
+        clear={() => true}
         placeholder="Type here..."
-        multiline={true}
+        multiline={false}
       />
       <RouteSlider />
     </div>
