@@ -14,6 +14,7 @@ import { loginSchema, registerSchema } from "../../validations/Schematics";
 
 export const FormModal = ({ closeModal, modalType }) => {
   const ref = useRef();
+  const errorRef = useRef(undefined);
   useOnClickOutside(ref, closeModal);
 
   const [isLoading, setIsLoading] = useState(false);
@@ -25,7 +26,6 @@ export const FormModal = ({ closeModal, modalType }) => {
       : { fullName: "", email: "", password: "", file: null, avatarFile: null };
 
   const validationSchema = modalType === "login" ? loginSchema : registerSchema;
-
   const onSubmit = async (values) => {
     if (modalType === "login") {
       setIsLoading(true);
@@ -46,6 +46,7 @@ export const FormModal = ({ closeModal, modalType }) => {
         }
       } catch (err) {
         console.log(err.response.data);
+        errorRef.current = err.response.data;
       } finally {
         setIsLoading(false);
       }
@@ -71,6 +72,7 @@ export const FormModal = ({ closeModal, modalType }) => {
         }
       } catch (err) {
         console.log(err.response.data);
+        errorRef.current = err.response.data;
       } finally {
         setIsLoading(false);
       }
@@ -124,21 +126,26 @@ export const FormModal = ({ closeModal, modalType }) => {
           ) : (
             <RegisterForm formik={formik} />
           )}
-          <button
-            disabled={isLoading}
-            className="bg-gradient-to-br  h-14 font-semibold text-xl px-12 shadow-md py-3 rounded-md to-[#ff796a] hover:brightness-125 via-[#fa4952] from-[#ff2b64]"
-            type="submit"
-          >
-            {!isLoading ? (
-              modalType === "login" ? (
-                "Log In"
-              ) : (
-                "Create Account"
-              )
-            ) : (
-              <Spinner />
+          <span className="flex flex-col gap-2">
+            {errorRef.current && (
+              <span className="text-red-500">{errorRef.current}</span>
             )}
-          </button>
+            <button
+              disabled={isLoading}
+              className="bg-gradient-to-br  h-14 font-semibold text-xl px-12 shadow-md py-3 rounded-md to-[#ff796a] hover:brightness-125 via-[#fa4952] from-[#ff2b64]"
+              type="submit"
+            >
+              {!isLoading ? (
+                modalType === "login" ? (
+                  "Log In"
+                ) : (
+                  "Create Account"
+                )
+              ) : (
+                <Spinner />
+              )}
+            </button>{" "}
+          </span>
         </form>
       </motion.div>
     </motion.div>

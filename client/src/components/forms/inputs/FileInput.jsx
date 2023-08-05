@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { PhotoIco } from "../../../assets/icons";
+import { CloseIco, PhotoIco } from "../../../assets/icons";
 import Cropper from "react-easy-crop";
 import { readFile } from "../../../helpers";
 import { getCroppedImg } from "../../../utils/cropUtils";
@@ -106,6 +106,17 @@ export const FileInput = ({ formik }) => {
             className="text-white text-2xl font-bold absolute bottom-0 left-0 bg-gradient-to-br h-12 rounded-br-md rounded-bl-md to-[#ff796a] hover:brightness-125 via-[#fa4952] from-[#ff2b64] w-full"
           >
             Crop
+          </button>
+
+          <button
+            onClick={() => {
+              setShow(false);
+              formik.setFieldValue("file", null);
+            }}
+            type="button"
+            className="absolute top-5 right-5"
+          >
+            <CloseIco />
           </button>
         </div>
       ) : null}
