@@ -1,5 +1,5 @@
 
-# Reac Tinder Clone
+# React Tinder Clone
 
 
 
