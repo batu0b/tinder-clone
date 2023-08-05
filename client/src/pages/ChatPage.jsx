@@ -17,8 +17,7 @@ export default function ChatPage() {
   const { user } = useAuthContext();
   const token = getAuthToken();
   const ChatBoxRef = useRef(null);
-  //TODO scroll bottom
-  //FIXME Fix socket out
+  //FIXME Fix socket disconnect
   const config = {
     headers: { "x-auth-token": token },
   };
@@ -40,39 +39,41 @@ export default function ChatPage() {
 
   useEffect(() => {
     socket = io("http://localhost:5000/");
-    socket.on("connected", () => {
-      return;
-    });
+    socket.on("connected", () => {});
     socket.emit("join chat", chatId);
   }, []);
 
   useEffect(() => {
     socket.on("message recieved", (data) => {
+      console.log(data);
       setResponse((prev) => {
         return { ...prev, messages: [...prev.messages, data] };
       });
     });
-
-    return () => {
-      socket.off("message recieved");
-    };
   }, []);
 
   const sendMessage = async () => {
     if (message.trim() !== "") {
-      try {
-        const { data } = await axios.post(
+      const content = message;
+      setMessage("");
+      await axios
+        .post(
           "http://localhost:5000/api/messages/",
           {
-            content: message,
+            content: content,
             chatId: chatId,
           },
           config
-        );
-        setMessage("");
-        if (data) {
+        )
+        .then((res) => res.data)
+        .then((data) => {
           const newData = {
-            ...data,
+            content: data.content,
+            sender: {
+              avatarFile: data.sender.avatarFile,
+              _id: data.sender._id,
+              fullName: data.sender.fullName,
+            },
             createdAt: new Date(),
           };
           setResponse((prev) => {
@@ -81,11 +82,14 @@ export default function ChatPage() {
               messages: [...prev.messages, newData],
             };
           });
-          socket.emit("new message", { newMessage: newData, room: chatId });
-        }
-      } catch (err) {
-        console.log(err);
-      }
+          socket.emit("new message", {
+            newMessage: newData,
+            room: chatId,
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
   };
 
