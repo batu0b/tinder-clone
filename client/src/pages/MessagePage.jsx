@@ -11,9 +11,12 @@ export const MessagePage = () => {
   const navigate = useNavigate();
   const token = getAuthToken();
   const { user } = useAuthContext();
-  const { response, loading } = useFetch(`http://localhost:5000/api/chats`, {
-    headers: { "x-auth-token": token },
-  });
+  const { response, loading } = useFetch(
+    `${process.env.REACT_APP_API_URL}api/chats`,
+    {
+      headers: { "x-auth-token": token },
+    }
+  );
   const chatList = response?.map((x) => {
     return {
       title: x.users.filter((y) => y._id !== user._id)[0].fullName,

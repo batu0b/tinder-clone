@@ -64,7 +64,7 @@ export default function TinderCards({ db, triggerFetch, setResponse }) {
   const swipePost = async (dir, OtherUserId) => {
     try {
       const res = await axios.post(
-        `http://localhost:5000/api/users/Swipe/${dir}`,
+        `${process.env.REACT_APP_API_URL}api/users/Swipe/${dir}`,
         {
           otherUserId: OtherUserId,
           id: user._id,

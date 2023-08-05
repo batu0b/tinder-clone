@@ -8,6 +8,7 @@ const mongoose = require("mongoose");
 const path = require("path");
 const { Server } = require("socket.io");
 const http = require("http");
+require("dotenv").config();
 
 const app = express();
 app.use(express.json());
@@ -40,9 +41,7 @@ const io = new Server(server, {
 });
 
 mongoose
-  .connect(
-    "mongodb+srv://tinderclone:1234567890@cluster0.zfdimhp.mongodb.net/?retryWrites=true&w=majority"
-  )
+  .connect(process.env.ATLAS_URL)
   .then(() => console.log("Connected"))
   .catch((err) => console.log(err));
 
@@ -55,6 +54,6 @@ io.on("connection", (socket) => {
   });
 });
 
-server.listen(5000, () => {
-  console.log("working on 5000");
+server.listen(process.env.PORT || 5000, () => {
+  console.log(`working on ${process.env.PORT || 5000}`);
 });

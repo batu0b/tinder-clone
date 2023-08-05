@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 
 export const ItemCard = ({ item }) => {
   const [show, setShow] = useState(false);
-  const imgUrl = `http://localhost:5000/imgs/${item.file}`;
+  const imgUrl = `${process.env.REACT_APP_API_URL}imgs/${item.file}`;
   return (
     <div
       style={{

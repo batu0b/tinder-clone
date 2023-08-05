@@ -22,7 +22,7 @@ export default function ChatPage() {
     headers: { "x-auth-token": token },
   };
   const { response, loading, setResponse } = useFetch(
-    `http://localhost:5000/api/messages/${chatId}`,
+    `${process.env.REACT_APP_API_URL}api/messages/${chatId}`,
     config
   );
   const newDate = new Date(response?.createdAt);
@@ -38,7 +38,7 @@ export default function ChatPage() {
   }, [ChatBoxRef.current, response?.messages]);
 
   useEffect(() => {
-    socket = io("http://localhost:5000/");
+    socket = io(`${process.env.REACT_APP_API_URL}`);
     socket.on("connected", () => {});
     socket.emit("join chat", chatId);
   }, []);
@@ -58,7 +58,7 @@ export default function ChatPage() {
       setMessage("");
       await axios
         .post(
-          "http://localhost:5000/api/messages/",
+          `${process.env.REACT_APP_API_URL}api/messages/`,
           {
             content: content,
             chatId: chatId,

@@ -57,7 +57,7 @@ function validateLogin(user) {
 }
 
 userSchema.methods.createAuthToken = (id) => {
-  return jwt.sign({ _id: id }, "jwtSecretKey");
+  return jwt.sign({ _id: id }, process.env.SECRET_KEY);
 };
 
 const User = mongoose.model("User", userSchema);

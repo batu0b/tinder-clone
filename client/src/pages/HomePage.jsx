@@ -8,7 +8,7 @@ import { Spinner } from "../components/animated/Spinner";
 export const HomePage = () => {
   const { user } = useAuthContext();
   const { err, loading, response, fetchData, setResponse } = useFetch(
-    `http://localhost:5000/api/users/Swipes/${user._id}`
+    `${process.env.REACT_APP_API_URL}api/users/Swipes/${user._id}`
   );
   return (
     <div className="h-screen-without-header">

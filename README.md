@@ -18,7 +18,14 @@
 ```bash
   npm run dev
 ```
-#### You need to add your own port and mongodb atlas address to the .env file
+#### You need to add your own port and mongodb atlas address to the .env file 
+
+.env 
+```ini
+PORT= Your Port Number
+ATLAS_URL= "Your Atlas Url "
+SECRET_KEY = "jwt SecretKey"
+```
 
 ----
 
@@ -37,6 +44,13 @@
   npm start
 ```
 #### You need to add your own api url to the .env file
+
+.env 
+```ini
+REACT_APP_API_URL="Your Api Url"
+
+
+```
 
 -----
   
